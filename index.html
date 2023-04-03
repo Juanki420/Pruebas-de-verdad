@@ -71,16 +71,15 @@
     </style>
 </head>
 
-<body>
-    <audio autoplay loop controls volume="0.5">
-        <source src="cancion.mp3" type="audio/mp3">
-    </audio>
+<body onload="reproducirCancion()">
     <div id="puntoGordo"></div>
     <h1>Generador de nombres al azar</h1>
     <p>Seleccione el tipo de nombre que desea:</p>
     <button onclick="generarNombre('hombre')">Obtener nombre de hombre al azar</button>
     <button onclick="generarNombre('mujer')">Obtener nombre de mujer al azar</button>
     <p id="nombreGenerado"></p>
+
+    <audio id="cancion" src="cancion.mp3" controls autoplay></audio>
 
     <audio id="sonidoFuegosArtificiales">
         <source src="fuegos_artificiales.mp3" type="audio/mpeg">
@@ -151,6 +150,17 @@
                 sonidoFuegosArtificiales.currentTime = 0; // Reiniciar el sonido si ya se está reproduciendo
                 sonidoFuegosArtificiales.play();
             }
+            var cancion = document.getElementById('cancion');
+            cancion.volume = 0.5; // Ajusta el volumen de la canción (de 0.0 a 1.0)
+
+            function reproducirCancion() {
+                cancion.play();
+            }
+
+            window.onbeforeunload = function () {
+                cancion.pause();
+                cancion.currentTime = 0;
+            };
         }
     </script>
 </body>
