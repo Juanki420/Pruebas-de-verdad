@@ -1,76 +1,71 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>Generador de nombres al azar</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: black;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<title>Generador de nombres al azar</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: black;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
-        h1 {
-            text-align: center;
-            color: #fff;
-            margin-bottom: 50px;
-        }
+h1 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 50px;
+}
 
-        p {
-            font-size: 18px;
-            text-align: center;
-            color: #fff;
-            margin-top: 50px;
-            margin-bottom: 0;
-        }
+p {
+    font-size: 18px;
+    text-align: center;
+    color: #fff;
+    margin-top: 50px;
+    margin-bottom: 0;
+}
 
-        button {
-            background-color: #373096;
-            border: none;
-            margin-top: 50px;
-            color: white;
-            padding: 12px 24px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 10px;
-            cursor: pointer;
-            border-radius: 4px;
-            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
+button {
+    background-color: #373096;
+    border: none;
+    margin-top: 50px;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
 
-        button:hover {
-            background-color: #3b3b3b;
-        }
+button:hover {
+    background-color: #3b3b3b;
+}
 
-        #puntoGordo {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background-color: #E53935;
-            top: 10px;
-            right: 10px;
-            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
+#nombreGenerado {
+    font-size: 24px;
+    color: #fff;
+    margin-top: 30px;
+    text-align: center;
+}
 
-        #nombreGenerado {
-            font-size: 24px;
-            color: #fff;
-            margin-top: 30px;
-            text-align: center;
-        }
-    </style>
+.punto {
+    position: fixed;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: red;
+}
+</style>
 </head>
-
 <body onload="reproducirCancion()">
     <div id="puntoGordo"></div>
     <h1>Generador de nombres al azar</h1>
@@ -88,53 +83,82 @@
     </audio>
 
     <script>{
-            // Obtener el elemento del punto
-            var punto = document.getElementById("puntoGordo");
+            var puntos = [];
 
-            // Definir la posición inicial del punto
-            var posicionX = 0;
-            var posicionY = 0;
+            for (var i = 0; i < 10; i++) {
+                // Crear un nuevo elemento de punto
+                var punto = document.createElement("div");
+                punto.className = "punto";
+                document.body.appendChild(punto);
 
-            // Definir la velocidad de desplazamiento del punto
-            var velocidadX = 1;
-            var velocidadY = 1;
+                // Definir la posición inicial del punto
+                var posicionX = Math.random() * window.innerWidth;
+                var posicionY = Math.random() * window.innerHeight;
 
-            // Definir el tamaño del paso de desplazamiento del punto
-            var paso = 5;
+                // Definir la velocidad de desplazamiento del punto
+                var velocidadX = 0.7;
+                var velocidadY = 0.7;
 
-            // Función para actualizar la posición del punto en cada fotograma
-            function actualizarPunto() {
-                // Calcular la nueva posición del punto sumando el tamaño del paso multiplicado por la velocidad de desplazamiento
-                posicionX += paso * velocidadX;
-                posicionY += paso * velocidadY;
+                // Definir el tamaño del paso de desplazamiento del punto
+                var paso = 3;
 
-                // Obtener el ancho y alto de la ventana del navegador
-                var ventanaAncho = window.innerWidth;
-                var ventanaAlto = window.innerHeight;
-
-                // Calcular la posición máxima permitida del punto para que no se salga de la ventana
-                var posicionMaximaX = ventanaAncho - punto.offsetWidth;
-                var posicionMaximaY = ventanaAlto - punto.offsetHeight;
-
-                // Revertir la velocidad de desplazamiento si el punto choca con los límites de la ventana
-                if (posicionX <= 0 || posicionX >= posicionMaximaX) {
-                    velocidadX = -velocidadX;
-                }
-                if (posicionY <= 0 || posicionY >= posicionMaximaY) {
-                    velocidadY = -velocidadY;
-                }
-
-                // Actualizar la posición del punto
-                punto.style.left = posicionX + "px";
-                punto.style.top = posicionY + "px";
-
-                // Solicitar la actualización de la posición del punto en el próximo fotograma
-                window.requestAnimationFrame(actualizarPunto);
+                // Añadir el punto al array de puntos
+                puntos.push({
+                    elemento: punto,
+                    posicionX: posicionX,
+                    posicionY: posicionY,
+                    velocidadX: velocidadX,
+                    velocidadY: velocidadY,
+                    paso: paso,
+                });
             }
 
-            // Iniciar la animación del punto al cargar la página
+            // Función para actualizar la posición de todos los puntos en cada fotograma
+            function actualizarPuntos() {
+                for (var i = 0; i < puntos.length; i++) {
+                    var punto = puntos[i];
+
+                    // Calcular la nueva posición del punto sumando el tamaño del paso multiplicado por la velocidad de desplazamiento
+                    punto.posicionX += punto.paso * punto.velocidadX;
+                    punto.posicionX = Math.max(0, Math.min(punto.posicionX, window.innerWidth));
+
+                    punto.posicionY += punto.paso * punto.velocidadY;
+                    punto.posicionY = Math.max(0, Math.min(punto.posicionY, window.innerHeight));
+                    // Obtener el ancho y alto de la ventana del navegador
+                    var ventanaAncho = window.innerWidth;
+                    var ventanaAlto = window.innerHeight;
+
+                    // Calcular la posición máxima permitida del punto para que no se salga de la ventana
+                    var posicionMaximaX = ventanaAncho - punto.elemento.offsetWidth;
+                    var posicionMaximaY = ventanaAlto - punto.elemento.offsetHeight;
+
+                    // Revertir la velocidad de desplazamiento si el punto choca con los límites de la ventana
+                    if (punto.posicionX <= 0 || punto.posicionX >= posicionMaximaX) {
+                        punto.velocidadX = -punto.velocidadX;
+                    }
+                    if (punto.posicionY <= 0 || punto.posicionY >= posicionMaximaY) {
+                        punto.velocidadY = -punto.velocidadY;
+                    }
+
+                    // Actualizar la posición del punto
+                    punto.elemento.style.left = punto.posicionX + "px";
+                    punto.elemento.style.top = punto.posicionY + "px";
+                }
+
+                // Solicitar la actualización de la posición de los puntos en el próximo fotograma
+                window.requestAnimationFrame(actualizarPuntos);
+            }
+
+            // Iniciar la animación de los puntos al cargar la página
             window.addEventListener("load", function () {
-                actualizarPunto();
+                actualizarPuntos();
+            });
+
+            // Crear 10 puntos al cargar la página
+            window.addEventListener("load", function () {
+                for (var i = 0; i < 10; i++) {
+                    crearPunto();
+                }
             });
 
             var nombresHombre = ["Juan", "Pedro", "Luis", "Pablo", "Jorge", "Diego", "Carlos", "Antonio", "Francisco", "Manuel", "Miguel", "Fernando", "Ricardo", "Gabriel", "Andrés", "Alejandro", "Gonzalo", "Javier", "Federico", "Emilio", "Óscar", "Alberto", "Roberto", "Santiago", "Enrique", "Guillermo", "Julio", "Joaquín", "Salvador", "Víctor", "Eduardo", "Adrián", "Germán", "Eugenio", "Mauricio", "Leonardo", "Rafael", "Rubén", "Iván", "Álex", "Xavier", "Esteban", "Jordi", "Arturo", "Joaquín José", "Jesús", "Israel", "Marco", "Mikel", "Ramón", "Lucas", "Felipe", "Gustavo", "Mariano", "Maximiliano", "Aitor", "Ariel", "Benjamín", "César", "Cristóbal", "Damián", "Ezequiel", "Héctor", "Hugo", "Isidro", "Jairo", "Jerónimo", "Julián", "Leandro", "Matías", "Nicolás", "Omar", "Pedro José", "Renato", "Rodolfo", "Sebastián", "Ulises", "Valentín", "Walter", "Yeray", "Zacarías", "Agustín", "Braulio", "Camilo", "Daniel", "Edgar", "Feliciano", "Gastón", "Hernán", "Ignacio", "José Antonio", "Kilian", "Lorenzo", "Mauro", "Nicolao", "Octavio", "Pascual", "Quintín", "Ricardo José", "Samuel", "Tomás", "Ubaldo", "Vicente", "Yago", "Zacarías José"];
