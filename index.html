@@ -85,7 +85,7 @@ button:hover {
     <script>{
             var puntos = [];
 
-            for (var i = 0; i < 100; i++) {
+            for (var i = 0; i < 20; i++) {
                 // Crear un nuevo elemento de punto
                 var punto = document.createElement("div");
                 punto.className = "punto";
@@ -96,11 +96,11 @@ button:hover {
                 var posicionY = Math.random() * window.innerHeight;
 
                 // Definir la velocidad de desplazamiento del punto
-                var velocidadX = 0.7;
-                var velocidadY = 0.7;
+                var velocidadX = 1;
+                var velocidadY = 1;
 
                 // Definir el tamaño del paso de desplazamiento del punto
-                var paso = 3;
+                var paso = 5;
 
                 // Añadir el punto al array de puntos
                 puntos.push({
