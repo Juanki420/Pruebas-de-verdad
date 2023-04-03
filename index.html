@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Generador de nombres al azar</title>
+</head>
+
+<body>
+    <div id="puntoGordo" style="position: absolute; width: 50px; height: 50px; border-radius: 50%; background-color: red;"></div>
+    <h1>Generador de nombres al azar</h1>
+    <p>Seleccione el tipo de nombre que desea:</p>
+    <button onclick="generarNombre('hombre')">Obtener nombre de hombre al azar</button>
+    <button onclick="generarNombre('mujer')">Obtener nombre de mujer al azar</button>
+    <p id="nombreGenerado"></p>
+
+    <audio id="sonidoFuegosArtificiales">
+        <source src="fuegos_artificiales.mp3" type="audio/mpeg">
+        <source src="fuegos_artificiales.wav" type="audio/wav">
+        Tu navegador no soporta la reproducción de audio.
+    </audio>
+
+    <script>{
+            // Obtener el elemento del punto
+            var punto = document.getElementById("puntoGordo");
+
+            // Definir la posición inicial del punto
+            var posicionX = 0;
+            var posicionY = 0;
+
+            // Definir la velocidad de desplazamiento del punto
+            var velocidadX = 2;
+            var velocidadY = 1;
+
+            // Definir el tamaño del paso de desplazamiento del punto
+            var paso = 5;
+
+            // Función para actualizar la posición del punto en cada fotograma
+            function actualizarPunto() {
+                // Calcular la nueva posición del punto sumando el tamaño del paso multiplicado por la velocidad de desplazamiento
+                posicionX += paso * velocidadX;
+                posicionY += paso * velocidadY;
+
+                // Obtener el ancho y alto de la ventana del navegador
+                var ventanaAncho = window.innerWidth;
+                var ventanaAlto = window.innerHeight;
+
+                // Calcular la posición máxima permitida del punto para que no se salga de la ventana
+                var posicionMaximaX = ventanaAncho - punto.offsetWidth;
+                var posicionMaximaY = ventanaAlto - punto.offsetHeight;
+
+                // Revertir la velocidad de desplazamiento si el punto choca con los límites de la ventana
+                if (posicionX <= 0 || posicionX >= posicionMaximaX) {
+                    velocidadX = -velocidadX;
+                }
+                if (posicionY <= 0 || posicionY >= posicionMaximaY) {
+                    velocidadY = -velocidadY;
+                }
+
+                // Actualizar la posición del punto
+                punto.style.left = posicionX + "px";
+                punto.style.top = posicionY + "px";
+
+                // Solicitar la actualización de la posición del punto en el próximo fotograma
+                window.requestAnimationFrame(actualizarPunto);
+            }
+
+            // Iniciar la animación del punto al cargar la página
+            window.addEventListener("load", function () {
+                actualizarPunto();
+            });
+
+            var nombresHombre = ["Juan", "Pedro", "Luis", "Pablo", "Jorge", "Diego", "Carlos", "Antonio", "Francisco", "Manuel", "Miguel", "Fernando", "Ricardo", "Gabriel", "Andrés", "Alejandro", "Gonzalo", "Javier", "Federico", "Emilio", "Óscar", "Alberto", "Roberto", "Santiago", "Enrique", "Guillermo", "Julio", "Joaquín", "Salvador", "Víctor", "Eduardo", "Adrián", "Germán", "Eugenio", "Mauricio", "Leonardo", "Rafael", "Rubén", "Iván", "Álex", "Xavier", "Esteban", "Jordi", "Arturo", "Joaquín José", "Jesús", "Israel", "Marco", "Mikel", "Ramón", "Lucas", "Felipe", "Gustavo", "Mariano", "Maximiliano", "Aitor", "Ariel", "Benjamín", "César", "Cristóbal", "Damián", "Ezequiel", "Héctor", "Hugo", "Isidro", "Jairo", "Jerónimo", "Julián", "Leandro", "Matías", "Nicolás", "Omar", "Pedro José", "Renato", "Rodolfo", "Sebastián", "Ulises", "Valentín", "Walter", "Yeray", "Zacarías", "Agustín", "Braulio", "Camilo", "Daniel", "Edgar", "Feliciano", "Gastón", "Hernán", "Ignacio", "José Antonio", "Kilian", "Lorenzo", "Mauro", "Nicolao", "Octavio", "Pascual", "Quintín", "Ricardo José", "Samuel", "Tomás", "Ubaldo", "Vicente", "Yago", "Zacarías José"];
+            var nombresMujer = ["María", "Ana", "Sofía", "Lucía", "Carmen", "Marta", "Raquel", "Elena", "Isabel", "Laura", "Teresa", "Beatriz", "Clara", "Lorena", "Carolina", "Sara", "Nuria", "Gema", "Leticia", "Mónica", "Aurora", "Silvia", "Rosa", "Luisa", "Sandra", "Verónica", "Lola", "Ana María", "Ainhoa", "Irene", "Victoria", "Nerea", "Amparo", "Aitana", "Ariadna", "Patricia", "Diana", "Miriam", "Begoña", "Cristina", "Elisa", "Fátima", "Gabriela", "Helena", "Inés", "Jana", "Karina", "Leire", "Margarita", "Nadia", "Olga", "Pilar", "Rebeca", "Sabela", "Tania", "Uxía", "Vanessa", "Ximena"]
+            function generarNombre(genero) {
+                var nombres = genero === 'hombre' ? nombresHombre : nombresMujer;
+                var indiceAleatorio = Math.floor(Math.random() * nombres.length);
+                var nombreAleatorio = nombres[indiceAleatorio];
+                document.getElementById("nombreGenerado").innerHTML = "El nombre generado es: " + nombreAleatorio;
+
+                // Reproducir el sonido de los fuegos artificiales
+                var sonidoFuegosArtificiales = document.getElementById("sonidoFuegosArtificiales");
+                sonidoFuegosArtificiales.currentTime = 0; // Reiniciar el sonido si ya se está reproduciendo
+                sonidoFuegosArtificiales.play();
+            }
+        }
+    </script>
+</body>
+
+</html>
