@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Animación de fuegos artificiales</title>
+	<style>
+		body {
+			background-color: black;
+			color: white;
+			font-family: Arial, sans-serif;
+			text-align: center;
+			overflow: hidden;
+		}
+
+		h1 {
+			font-size: 12rem;
+			margin: 0;
+			padding: 0;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			text-shadow: 0 0 10px white;
+		}
+
+		canvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: -1;
+		}
+	</style>
+</head>
+<body>
+	<h1 id="name"></h1>
+	<canvas id="fireworks"></canvas>
+	<audio id="firework-sound">
+		<source src="https://dl.ymcdn.website/82d44d6441e3c0ce60aa3561a3c8ab5f/4gcs5k8n-FY" type="audio/mpeg">
+	</audio>
+	<script>
+		// Obtener el nombre enviado desde la ventana principal
+		var name = window.opener.postMessage(name);
+
+		// Obtener el elemento de audio y configurar la reproducción
+		var sound = document.getElementById("firework-sound");
+		sound.volume = 0
