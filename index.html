@@ -3,10 +3,76 @@
 
 <head>
     <title>Generador de nombres al azar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 50px;
+        }
+
+        p {
+            font-size: 18px;
+            text-align: center;
+            color: #fff;
+            margin-top: 50px;
+            margin-bottom: 0;
+        }
+
+        button {
+            background-color: #373096;
+            border: none;
+            margin-top: 50px;
+            color: white;
+            padding: 12px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3b3b3b;
+        }
+
+        #puntoGordo {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #E53935;
+            top: 10px;
+            right: 10px;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        #nombreGenerado {
+            font-size: 24px;
+            color: #fff;
+            margin-top: 30px;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="puntoGordo" style="position: absolute; width: 50px; height: 50px; border-radius: 50%; background-color: red;"></div>
+    <div id="puntoGordo"></div>
     <h1>Generador de nombres al azar</h1>
     <p>Seleccione el tipo de nombre que desea:</p>
     <button onclick="generarNombre('hombre')">Obtener nombre de hombre al azar</button>
@@ -28,7 +94,7 @@
             var posicionY = 0;
 
             // Definir la velocidad de desplazamiento del punto
-            var velocidadX = 2;
+            var velocidadX = 1;
             var velocidadY = 1;
 
             // Definir el tamaño del paso de desplazamiento del punto
