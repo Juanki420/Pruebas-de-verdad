@@ -3,55 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Generador de Poemas</title>
+  <title>Generador de Chistes</title>
 </head>
 <body>
 
-  <h1>Generador de Poemas</h1>
+  <h1>Generador de Chistes</h1>
   
-  <label for="inputText">Ingresa un texto:</label>
-  <textarea id="inputText" rows="4" cols="50"></textarea>
+  <button onclick="generarChiste()">Generar Chiste</button>
 
-  <button onclick="generarPoema()">Generar Poema</button>
-
-  <h2>Poema Generado:</h2>
-  <p id="poemaGenerado"></p>
+  <h2>Chiste Generado:</h2>
+  <p id="chisteGenerado"></p>
 
   <script>
-    async function generarPoema() {
-      const inputText = document.getElementById('inputText').value;
-      const poemaGeneradoElement = document.getElementById('poemaGenerado');
+    function generarChiste() {
+      var baseURL = "https://v2.jokeapi.dev";
+      var categories = ["Programming", "Misc", "Pun", "Spooky", "Christmas"];
+      var params = [
+        "blacklistFlags=nsfw,religious,racist",
+        "idRange=0-100"
+      ];
 
-      poemaGeneradoElement.innerText = 'Generando poema...';
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", baseURL + "/joke/" + categories.join(",") + "?" + params.join("&"));
 
-      try {
-        const response = await fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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'
-          },
-          body: JSON.stringify({
-            prompt: inputText,
-            max_tokens: 150
-          })
-        });
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status < 300) {
+          var randomJoke = JSON.parse(xhr.responseText);
 
-        const data = await response.json();
-        const poemaGenerado = data.choices[0].text.trim();
-
-        // Muestra el poema generado letra por letra
-        for (let i = 0; i < poemaGenerado.length; i++) {
-          setTimeout(() => {
-            poemaGeneradoElement.innerText = poemaGenerado.substring(0, i + 1);
-          }, 100 * i);
+          var chisteGeneradoElement = document.getElementById('chisteGenerado');
+          chisteGeneradoElement.innerText = (randomJoke.type == "single") ? randomJoke.joke : randomJoke.setup + '\n' + randomJoke.delivery;
+        } else if (xhr.readyState == 4) {
+          alert("Error while requesting joke.\n\nStatus code: " + xhr.status + "\nServer response: " + xhr.responseText);
         }
+      };
 
-      } catch (error) {
-        poemaGeneradoElement.innerText = 'Error al generar el poema.';
-        console.error('Error:', error);
-      }
+      xhr.send();
     }
   </script>
 
