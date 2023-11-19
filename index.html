@@ -18,29 +18,40 @@
   <p id="poemaGenerado"></p>
 
   <script>
-    function generarPoema() {
+    async function generarPoema() {
       const inputText = document.getElementById('inputText').value;
+      const poemaGeneradoElement = document.getElementById('poemaGenerado');
 
-      // Llamada a la API de OpenAI para obtener un poema
-      // Reemplaza 'TU_CLAVE_DE_API' con tu clave válida
-      // Ten en cuenta que esta es solo una implementación básica, y se necesita un backend para proteger tu clave de API.
-      fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer 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'
-        },
-        body: JSON.stringify({
-          prompt: inputText,
-          max_tokens: 150
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
+      poemaGeneradoElement.innerText = 'Generando poema...';
+
+      try {
+        const response = await fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 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'
+          },
+          body: JSON.stringify({
+            prompt: inputText,
+            max_tokens: 150
+          })
+        });
+
+        const data = await response.json();
         const poemaGenerado = data.choices[0].text.trim();
-        document.getElementById('poemaGenerado').innerText = poemaGenerado;
-      })
-      .catch(error => console.error('Error:', error));
+
+        // Muestra el poema generado letra por letra
+        for (let i = 0; i < poemaGenerado.length; i++) {
+          setTimeout(() => {
+            poemaGeneradoElement.innerText = poemaGenerado.substring(0, i + 1);
+          }, 100 * i);
+        }
+
+      } catch (error) {
+        poemaGeneradoElement.innerText = 'Error al generar el poema.';
+        console.error('Error:', error);
+      }
     }
   </script>
 
