@@ -1,192 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<title>Generador de nombres al azar</title>
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background-color: black;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-h1 {
-    text-align: center;
-    color: #fff;
-    margin-bottom: 50px;
-}
-
-p {
-    font-size: 18px;
-    text-align: center;
-    color: #fff;
-    margin-top: 50px;
-    margin-bottom: 0;
-}
-
-button {
-    background-color: #373096;
-    border: none;
-    margin-top: 50px;
-    color: white;
-    padding: 12px 24px;
-    text-align: center;
-    text-decoration: aqua;
-    display: inline-block;
-    font-size: 16px;
-    margin: 10px;
-    cursor: pointer;
-    border-radius: 4px;
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    background-color: #3b3b3b;
-}
-
-#nombreGenerado {
-    font-size: 24px;
-    color: #fff;
-    margin-top: 30px;
-    text-align: center;
-}
-
-.punto {
-    position: fixed;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background-color: red;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Poemas</title>
 </head>
-<body onload="reproducirCancion()">
-    <div id="puntoGordo"></div>
-    <h1>Generador de nombres al azar</h1>
-    <p>Seleccione el tipo de nombre que desea:</p>
-    <button onclick="generarNombre('hombre')">Obtener nombre de hombre al azar</button>
-    <button onclick="generarNombre('mujer')">Obtener nombre de mujer al azar</button>
-    <p id="nombreGenerado"></p>
+<body>
 
-    <audio id="cancion" src="cancion.mp3" controls autoplay></audio>
+  <h1>Generador de Poemas</h1>
+  
+  <label for="inputText">Ingresa un texto:</label>
+  <textarea id="inputText" rows="4" cols="50"></textarea>
 
-    <audio id="sonidoFuegosArtificiales">
-        <source src="fuegos_artificiales.mp3" type="audio/mpeg">
-        <source src="fuegos_artificiales.wav" type="audio/wav">
-        Tu navegador no soporta la reproducción de audio.
-    </audio>
+  <button onclick="generarPoema()">Generar Poema</button>
 
-    <script>{
-            var puntos = [];
+  <h2>Poema Generado:</h2>
+  <p id="poemaGenerado"></p>
 
-            for (var i = 0; i < 20; i++) {
-                // Crear un nuevo elemento de punto
-                var punto = document.createElement("div");
-                punto.className = "punto";
-                document.body.appendChild(punto);
+  <script>
+    function generarPoema() {
+      const inputText = document.getElementById('inputText').value;
 
-                // Definir la posición inicial del punto
-                var posicionX = Math.random() * window.innerWidth;
-                var posicionY = Math.random() * window.innerHeight;
+      // Llamada a la API de OpenAI para obtener un poema
+      // Reemplaza 'TU_CLAVE_DE_API' con tu clave válida
+      // Ten en cuenta que esta es solo una implementación básica, y se necesita un backend para proteger tu clave de API.
+      fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer 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'
+        },
+        body: JSON.stringify({
+          prompt: inputText,
+          max_tokens: 150
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        const poemaGenerado = data.choices[0].text.trim();
+        document.getElementById('poemaGenerado').innerText = poemaGenerado;
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  </script>
 
-                // Definir la velocidad de desplazamiento del punto
-                var velocidadX = 1;
-                var velocidadY = 1;
-
-                // Definir el tamaño del paso de desplazamiento del punto
-                var paso = 5;
-
-                // Añadir el punto al array de puntos
-                puntos.push({
-                    elemento: punto,
-                    posicionX: posicionX,
-                    posicionY: posicionY,
-                    velocidadX: velocidadX,
-                    velocidadY: velocidadY,
-                    paso: paso,
-                });
-            }
-
-            // Función para actualizar la posición de todos los puntos en cada fotograma
-            function actualizarPuntos() {
-                for (var i = 0; i < puntos.length; i++) {
-                    var punto = puntos[i];
-
-                    // Calcular la nueva posición del punto sumando el tamaño del paso multiplicado por la velocidad de desplazamiento
-                    punto.posicionX += punto.paso * punto.velocidadX;
-                    punto.posicionX = Math.max(0, Math.min(punto.posicionX, window.innerWidth));
-
-                    punto.posicionY += punto.paso * punto.velocidadY;
-                    punto.posicionY = Math.max(0, Math.min(punto.posicionY, window.innerHeight));
-                    // Obtener el ancho y alto de la ventana del navegador
-                    var ventanaAncho = window.innerWidth;
-                    var ventanaAlto = window.innerHeight;
-
-                    // Calcular la posición máxima permitida del punto para que no se salga de la ventana
-                    var posicionMaximaX = ventanaAncho - punto.elemento.offsetWidth;
-                    var posicionMaximaY = ventanaAlto - punto.elemento.offsetHeight;
-
-                    // Revertir la velocidad de desplazamiento si el punto choca con los límites de la ventana
-                    if (punto.posicionX <= 0 || punto.posicionX >= posicionMaximaX) {
-                        punto.velocidadX = -punto.velocidadX;
-                    }
-                    if (punto.posicionY <= 0 || punto.posicionY >= posicionMaximaY) {
-                        punto.velocidadY = -punto.velocidadY;
-                    }
-
-                    // Actualizar la posición del punto
-                    punto.elemento.style.left = punto.posicionX + "px";
-                    punto.elemento.style.top = punto.posicionY + "px";
-                }
-
-                // Solicitar la actualización de la posición de los puntos en el próximo fotograma
-                window.requestAnimationFrame(actualizarPuntos);
-            }
-
-            // Iniciar la animación de los puntos al cargar la página
-            window.addEventListener("load", function () {
-                actualizarPuntos();
-            });
-
-            // Crear 10 puntos al cargar la página
-            window.addEventListener("load", function () {
-                for (var i = 0; i < 30; i++) {
-                    crearPunto();
-                }
-            });
-
-            var nombresHombre = ["Juan", "Pedro", "Manuel", "Antonio", "Francisco", "Javier", "José", "Miguel", "Carlos", "Rafael", "Luis", "Fernando", "David", "Pablo", "Ángel", "Diego", "Jorge", "Adrián", "Mario", "Rubén", "Sergio", "Enrique", "Gonzalo", "Emilio", "Jesús", "Daniel", "Ignacio", "Alfonso", "Iván", "Alberto", "Víctor", "Roberto", "Andrés", "Alejandro", "Ricardo", "Josué", "Tomás", "Gabriel", "Juan Carlos", "Julio", "Óscar", "Jaime", "Guillermo", "Israel", "Héctor", "Arturo", "Joaquín", "Santiago", "Francisco Javier", "Salvador", "César", "Esteban", "Nicolás", "Ramón", "Eduardo", "Germán", "Xavier", "Marcos", "Mauricio", "Agustín", "Felipe", "Álvaro", "Bruno", "Cristian", "Hugo", "Julián", "Leonardo", "Marcelo", "Maximiliano", "Miguel Ángel", "Raúl", "René", "Simón", "Ulises", "Victoriano", "Abel", "Albert", "Aitor", "Alfredo", "Alonso", "Ander", "Antoni", "Arnau", "Asier", "Baltasar", "Borja", "Bruno", "Carles", "Damián", "Eloy", "Ernesto", "Fidel", "Genaro", "Gilberto", "Gorka", "Gregorio", "Gustavo", "Iago", "Iker", "Isaac", "Isidro", "Ivanhoe", "Jacinto", "Joan", "Joel", "Jon", "José Luis", "Josep", "Josu", "Jovino", "Juan José", "Koldo", "Lander", "Leandro", "Lope", "Lorenzo", "Lucas", "Ludovico", "Luismi", "Luziano", "Marc", "Marcelino", "Mariano", "Martín", "Miguelito", "Mikel", "Néstor", "Nicolau", "Olegario", "Oriol", "Paco", "Patxi", "Quim", "Quintín", "Raúl", "Ricard", "Roger", "Santi", "Saulo", "Sergi", "Tadeo", "Teo", "Tito", "Tristán", "Unai", "Uriel", "Valentín", "Vicente", "Xabier", "Ximo", "Xulio", "Yago", "Yeray", "Zigor", "Julio", "Pablo", "Víctor", "Alfredo", "César", "Ángel", "Hugo", "Mario", "Carlos", "Adrián", "Ismael", "Manuel", "Federico", "Diego", "Pedro", "Francisco", "Ricardo", "Javier", "Rubén", "Luis", "Miguel", "Sergio", "Óscar", "David", "Antonio", "Juan", "Ignacio", "José", "Fernando", "Gonzalo", "Raúl", "Emilio", "Agustín", "Tomás", "Benjamín", "Eduardo", "Daniel", "Marcos", "Guillermo", "Alejandro", "Jesús", "Rafael", "Félix", "Nicolás", "Andrés", "Alberto", "Jorge", "Gabriel", "Lucas", "Xavier", "Roberto", "Josu", "Arturo", "Mariano", "Esteban", "Gustavo", "Joan", "Leandro", "Lorenzo", "Iván", "Borja", "Isaac", "Joel", "Mauricio", "Samuel", "Salvador", "Ernesto", "Eloy", "Marc", "Mariano", "Aitor", "Unai", "Aitor", "Iker", "Eneko", "Mikel", "Jon", "Jokin", "Iñigo", "Asier", "Jordi", "Santi", "Jaime", "Teo", "Pau", "Quim", "Joan Carles", "Adolfo", "Aitor", "Albert", "Alberto", "Aleix", "Alejandro", "Alex", "Álex", "Alfonso", "Alfredo", "Álvaro", "Amadeo", "Andreu", "Ángel", "Aníbal", "Antonio", "Armando", "Arnau", "Arturo", "Asier", "Augusto", "Axel", "Baltasar", "Bartolomé", "Basilio", "Bautista", "Beltrán", "Benito", "Benjamín", "Bernabé", "Bernardo", "Blas", "Borja", "Bruno", "Camilo", "Carlos", "Cándido", "Carmelo", "Cayetano", "César", "Cirilo", "Clemente", "Cristóbal", "Damián", "Daniel", "David", "Demetrio", "Diego", "Dionisio", "Eduardo", "Elías", "Emilio", "Enrique", "Ernesto", "Esteban", "Eugenio", "Eusebio", "Fabián", "Felipe", "Félix", "Fernando", "Fidel", "Francisco", "Gabriel", "Gaspar", "Gerardo", "Germán", "Gonzalo", "Gregorio", "Guillermo", "Gustavo", "Héctor", "Hilario", "Hugo", "Ignacio", "Iker", "Ildefonso", "Inocencio", "Isaac", "Isidro", "Ismael", "Jacinto", "Jaime", "Javier", "Jerónimo", "Pedro", "Pablo", "José Manuel", "Miguel Ángel", "Jordi", "Guillermo", "Vicente", "Enrique", "Manuel Jesús", "Javier", "Juan José", "Eduardo", "Andrés", "Alfredo", "Xavier", "César", "Sergio", "Santiago", "Emilio", "Antonio Jesús", "Luis Miguel", "Rafael", "Diego", "Fernando", "Gonzalo", "Daniel", "Mariano", "Aitor", "David", "Jaime", "Francisco Javier", "Iñaki", "Eloy", "Héctor", "Alberto", "Julio", "Marcos", "Gorka", "Ramón", "Adrián", "Mario", "Nicolás", "Alejandro", "Paco", "Mikel", "Cristóbal", "Salvador", "Tomás", "Agustín", "Carlos Alberto", "Cristian", "Ismael", "Juan Pedro", "Lucas", "Eugenio", "Roberto", "Federico", "Guillermo José", "Óscar", "Israel", "Ángel", "Iván", "Antonio Manuel", "Francisco José", "Ignacio", "Cayetano", "Manuel Antonio", "Albert", "Aitor", "Marc", "Martín", "Máximo", "Nacho", "Mauricio", "Óscar Javier", "Cristóbal", "Ricardo", "Rodrigo", "Sebastián", "Teodoro", "Víctor", "Arturo", "Bruno", "Felipe", "Ignasi", "Luis Alberto", "Miguel Ángel", "Nicolau", "Pedro Antonio", "Pere", "Pol", "Rubén", "Santiago José", "Xabier", "Andrés Manuel", "Antonio José", "Carlos Andrés", "Eduardo José", "Eneko", "Felipe José", "Fidel", "Francesc", "Francisco Miguel", "Gabriel", "Hugo", "Isidro", "Joaquín", "Jordi", "José Ángel", "José Carlos", "José Enrique", "José Luis", "José Miguel", "Juan Antonio", "Juan Francisco", "Juan Luis", "Juan Manuel", "Juan Miguel", "Julian", "Leonardo", "Lorenzo", "Luca", "Luciano", "Luis Fernando", "Luis Javier", "Luis Miguel", "Manuel Ángel", "Manuel Francisco", "Mariano José", "Mario Alberto", "Miguel Ángel", "Miquel Àngel", "Nicolás José", "Oscar José", "Oscar Luis", "Pablo José", "Pablo Manuel", "Pedro Luis", "Rafael José", "Rafael Manuel", "Ricardo José", "Ricardo Manuel", "Roberto Carlos", "Roberto José", "Rodolfo", "Salvador José", "Santiago José", "Santiago Manuel", "Sergio José", "Sergio Manuel", "Teodoro José", "Tomas José", "Vicente José", "Vicente Manuel", "Víctor Manuel"];
-            var nombresMujer = ["Adela", "Adelaida", "Adriana", "Agata", "Agueda", "Aida", "Ainhoa", "Aitana", "Alba", "Alberta", "Albina", "Alejandra", "Alexandra", "Alfonsa", "Alicia", "Alina", "Almudena", "Altagracia", "Amada", "Amalia", "Amanda", "Amelia", "Ana", "Anabel", "Anastasia", "Andrea", "Angeles", "Angustias", "Anita", "Anna", "Antonia", "Araceli", "Ariadna", "Ariana", "Aroa", "Ascension", "Asuncion", "Aurea", "Aurora", "Avelina", "Azucena", "Bárbara", "Balbina", "Beatriz", "Begoña", "Belén", "Belen", "Berta", "Blanca", "Brenda", "Brígida", "Candela", "Caridad", "Carina", "Carmela", "Carmen", "Carolina", "Casandra", "Casilda", "Catalina", "Cayetana", "Cecilia", "Celeste", "Celia", "Chantal", "Chelo", "Chus", "Cinta", "Clara", "Clarisa", "Claudia", "Clementina", "Cleopatra", "Concepcion", "Conchita", "Consuelo", "Cora", "Covadonga", "Cristina", "Dalia", "Dana", "Daniela", "Debora", "Delfina", "Delia", "Denise", "Diana", "Dolores", "Dominica", "Dora", "Dulce", "Edelmira", "Edith", "Elena", "Elisa", "Elisabeth", "Elisenda", "Elvira", "Ema", "Emilia", "Emma", "Engracia", "Erika", "Estefania", "Estela", "Ester", "Eva", "Fabiana", "Fanny", "Fara", "Fátima", "Fe", "Federica", "Felicidad", "Felipa", "Fernanda", "Florencia", "Florinda", "Francesca", "Gabriela", "Genoveva", "Georgina", "Geraldine", "Gertrudis", "Gisela", "Gloria", "Graciela", "Gracia", "Gregoria", "Guadalupe", "Guillermina", "Helena", "Herminia", "Hilda", "Hortensia", "Ida", "Ines", "Inmaculada", "Irene", "Iris", "Isabel", "Isabela", "Isidora", "Isolina", "Itziar", "Ivana", "Ivonne", "Jacinta", "Jade", "Javiera", "Jessica", "Jimena", "Joana", "Joanna", "Josefa", "Josefina", "Juana", "Julia", "Juliana", "Julita", "Juncal", "Judit", "Judith", "Julieta", "Karen", "Valeria", "Ximena", "Yasmina", "Zoe", "Alicia", "Beatriz", "Carmen", "Diana", "Elena", "Fátima", "Gabriela", "Helena", "Inés", "Jimena", "Karen", "Laura", "María", "Nuria", "Olivia", "Paula", "Raquel", "Sara", "Tania", "Ursula", "Verónica", "Wendy", "Xenia", "Yolanda", "Zaida", "Adela", "Blanca", "Clara", "Dolores", "Esperanza", "Fernanda", "Gloria", "Isabel", "Juana", "Lourdes", "Marta", "Natalia", "Ofelia", "Patricia", "Rebeca", "Sofía", "Teresa", "Úrsula", "Valentina", "Wanda", "Xandra", "Yvonne", "Zulema", "Amparo", "Berta", "Cecilia", "Dora", "Elisa", "Flor", "Gema", "Herminia", "Isadora", "Julia", "Leonor", "Manuela", "Nieves", "Olimpia", "Pilar", "Ramona", "Silvia", "Tomasa", "Úrsula", "Violeta", "Wenceslada", "Xochitl", "Yvette", "Zoe", "Ana", "Beatriz", "Carolina", "Dolores", "Esther", "Francisca", "Gisela", "Hilda", "Isidora", "Josefa", "Lidia", "Marisol", "Nadia", "Olga", "Paulina", "Reyes", "Soledad", "Teresa", "Úrsula", "Valentia", "Wanda", "Ximena", "Yolanda", "Zoila", "Aurora", "Brunilda", "Catalina", "Diana", "Eva", "Fiona", "Graciela", "Iris", "Juana", "Lucía", "Margarita", "Natalia", "Oriana", "Pamela", "Rosario", "Susana", "Trinidad", "Úrsula", "Victoria", "Wendy", "Xenia", "Yanira", "Zafira"]
-            function generarNombre(genero) {
-                var nombres = genero === 'hombre' ? nombresHombre : nombresMujer;
-                var indiceAleatorio = Math.floor(Math.random() * nombres.length);
-                var nombreAleatorio = nombres[indiceAleatorio];
-                document.getElementById("nombreGenerado").innerHTML = "El nombre generado es: " + nombreAleatorio;
-
-                // Reproducir el sonido de los fuegos artificiales
-                var sonidoFuegosArtificiales = document.getElementById("sonidoFuegosArtificiales");
-                sonidoFuegosArtificiales.currentTime = 0; // Reiniciar el sonido si ya se está reproduciendo
-                sonidoFuegosArtificiales.play();
-            }
-            var cancion = document.getElementById('cancion');
-            cancion.volume = 0.5; // Ajusta el volumen de la canción (de 0.0 a 1.0)
-
-            function reproducirCancion() {
-                cancion.play();
-            }
-
-            window.onbeforeunload = function () {
-                cancion.pause();
-                cancion.currentTime = 0;
-            };
-        }
-    </script>
 </body>
-
 </html>
