@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Generador de Chistes</title>
+  <title>Generador de Chistes en Español</title>
 </head>
 <body>
 
   <h1>Generador de Chistes</h1>
   
+  <label for="inputPalabra">Ingresa una palabra clave:</label>
+  <input type="text" id="inputPalabra" placeholder="Ej. programación">
+
   <button onclick="generarChiste()">Generar Chiste</button>
 
   <h2>Chiste Generado:</h2>
@@ -17,14 +20,17 @@
   <script>
     function generarChiste() {
       var baseURL = "https://v2.jokeapi.dev";
-      var categories = ["Programming", "Misc", "Pun", "Spooky", "Christmas"];
+      var lang = "es"; // Agregamos el idioma español
+      var palabraClave = document.getElementById('inputPalabra').value;
       var params = [
         "blacklistFlags=nsfw,religious,racist",
-        "idRange=0-100"
+        "idRange=0-100",
+        "lang=" + lang,
+        "contains=" + palabraClave // Agregamos la palabra clave
       ];
 
       var xhr = new XMLHttpRequest();
-      xhr.open("GET", baseURL + "/joke/" + categories.join(",") + "?" + params.join("&"));
+      xhr.open("GET", baseURL + "/joke/Any?" + params.join("&"));
 
       xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status < 300) {
